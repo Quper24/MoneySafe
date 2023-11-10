@@ -1,4 +1,4 @@
-import { convertStringNumber } from "./helpers.js";
+import { animationNumber, convertStringNumber } from "./helpers.js";
 import { getData, postData } from "./service.js";
 
 const financeForm = document.querySelector(".finance__form");
@@ -28,7 +28,7 @@ const addNewOperation = async (e) => {
     amount -= changeAmount;
   }
 
-  financeAmount.textContent = `${amount.toLocaleString("RU-ru")} ₽`;
+  animationNumber(financeAmount, amount);
   financeForm.reset();
 };
 
@@ -47,7 +47,7 @@ export const financeControl = async () => {
     return acc;
   }, 0);
 
-  financeAmount.textContent = `${amount.toLocaleString("RU-ru")} ₽`;
+  animationNumber(financeAmount, amount);
 
   financeForm.addEventListener("submit", addNewOperation);
 };

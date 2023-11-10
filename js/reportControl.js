@@ -1,16 +1,21 @@
+import { financeControl } from "./financeControl.js";
+import { clearChart, generateChart } from "./generateChart.js";
 import { reformatDate } from "./helpers.js";
 import { OverlayScrollbars } from "./overlayscrollbars.esm.min.js";
-import { getData } from "./service.js";
+import { delData, getData } from "./service.js";
 
 const typesOperation = {
   income: "доход",
   expenses: "расход",
 };
 
+let actualData = [];
+
 const report = document.querySelector(".report");
 const financeReport = document.querySelector(".finance__report");
 const reportOperationList = document.querySelector(".report__operation-list");
 const reportDates = document.querySelector(".report__dates");
+const generateChartButton = document.querySelector("#generateChartButton");
 
 OverlayScrollbars(report, {});
 
@@ -74,8 +79,17 @@ const renderReport = (data) => {
 };
 
 export const reportControl = () => {
-  reportOperationList.addEventListener("click", ({ target }) => {
-    console.log(target.dataset.id); // дз
+  reportOperationList.addEventListener("click", async ({ target }) => {
+    const buttonDel = target.closest(".report__button_table");
+
+    if (buttonDel) {
+      await delData(`/finance/${buttonDel.dataset.id}`);
+
+      const reportRow = buttonDel.closest(".report__row");
+      reportRow.remove();
+      financeControl();
+      clearChart();
+    }
   });
 
   financeReport.addEventListener("click", async () => {
@@ -83,12 +97,12 @@ export const reportControl = () => {
     financeReport.textContent = "Загрузка";
     financeReport.disabled = true;
 
-    const data = await getData("/finance");
+    actualData = await getData("/finance");
 
     financeReport.textContent = textContent;
     financeReport.disabled = false;
 
-    renderReport(data);
+    renderReport(actualData);
     openReport();
   });
 
@@ -110,7 +124,13 @@ export const reportControl = () => {
     const queryString = searchParams.toString();
     const url = queryString ? `/finance?${queryString}` : "/finance";
 
-    const data = await getData(url);
-    renderReport(data);
+    actualData = await getData(url);
+
+    renderReport(actualData);
+    clearChart();
   });
 };
+
+generateChartButton.addEventListener("click", () => {
+  generateChart(actualData);
+});
