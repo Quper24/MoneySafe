@@ -43,6 +43,8 @@ export const generateChart = (data) => {
     myChart.destroy();
   }
 
+  console.log(chartLabel);
+
   myChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -51,19 +53,19 @@ export const generateChart = (data) => {
         {
           label: "Доходы",
           data: incomeAmounts,
-          borderWidth: 2,
+          borderWidth: 1,
           hidden: true,
         },
         {
           label: "Расходы",
           data: expensesAmounts,
-          borderWidth: 2,
+          borderWidth: 1,
           hidden: true,
         },
         {
           label: "Баланс",
           data: balanceAmounts,
-          borderWidth: 2,
+          borderWidth: 5,
           hidden: false,
         },
       ],
